@@ -6,13 +6,18 @@
     <title>Laberinto</title>
 </head>
 <body>
-    <canvas id="miCanvas" width="500" height="500"></canvas>
+    <canvas id="miCanvas" width="600" height="600"></canvas>
+    <audio src="musica-sonido/musica.mp3" id="musicaAmbiental" preload="auto"></audio>
     <style>
         body{
             min-height: 90vh;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        img, audio{
+            display: none;
         }
 
         #miCanvas{
