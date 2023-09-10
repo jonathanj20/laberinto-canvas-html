@@ -1,13 +1,15 @@
 const canvas = document.getElementById('miCanvas');
 const ctx = canvas.getContext('2d');
-let posicionX = 15, posicionY = 15, oldX=0, oldY=0, w = 30, h = 30;
+let posicionX = 15, posicionY = 15, oldX=0, oldY=0, w = 30, h = 30, xMora=20, yMora=515;
 let toco = false, gano = false, tocoFresa = false;
 let arregloMuros = [], arregloFrutas =  [];
-let tucan = new Image(), fresa = new Image();
+let tucan = new Image(), fresa = new Image(), mora = new Image();
 const musica = document.getElementById('musicaAmbiental');
 const sonidoMeta = document.getElementById('sonidoFinal');
+const sonidoTeletransportacion = document.getElementById('teletransportacion');
 let tiempoTotalSegundos = 0, puntuacion = 0;
 
+mora.src = 'iconos/mora.png';
 tucan.src = 'iconos/feliz.png'
 fresa.src = 'iconos/fresa.png'
 
@@ -197,11 +199,25 @@ document.addEventListener("keydown",(e) => {
     pintarMapa();
     dibujarTucan();
     llegoMeta();
+    dibujarMora();
 });
 
 //esta función dibuja el personaje
 function dibujarTucan(){
     ctx.drawImage(tucan, posicionX, posicionY, w, h);
+}
+
+function dibujarMora(){
+    let t_x = xMora, t_y = yMora, t_w = 30, t_h = 30;
+
+    if(posicionX < t_x + t_w && posicionX + w > t_x && posicionY < t_y + t_h && posicionY + h > t_y){
+        sonidoTeletransportacion.play();
+        xMora = -100;
+        posicionX = 15;
+        posicionY = 15;
+    }
+
+    ctx.drawImage(mora, xMora, yMora, t_w, t_h);
 }
 
 function pintarMapa(){
@@ -248,7 +264,6 @@ function llegoMeta(){
     ctx.fillRect(t_x, t_y, t_w, t_h);
 
     if(posicionX < t_x + t_w && posicionX + w > t_x && posicionY < t_y + t_h && posicionY + h > t_y){
-        console.log('llegaste a la METAA!!!')
         sonidoMeta.play();
         gano = true;
     }
@@ -266,6 +281,7 @@ window.addEventListener('load', () => {
     pintarMapa();
     dibujarTucan()
     llegoMeta();
+    dibujarMora();
 });
 
 //este evento se está usando para reproducir la música de nuevo cuando termine
