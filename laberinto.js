@@ -3,15 +3,17 @@ const ctx = canvas.getContext('2d');
 let posicionX = 15, posicionY = 15, oldX=0, oldY=0, w = 30, h = 30, xMora=20, yMora=515;
 let toco = false, gano = false, tocoFresa = false;
 let arregloMuros = [], arregloFrutas =  [];
-let tucan = new Image(), fresa = new Image(), mora = new Image();
+let tucan = new Image(), fresa = new Image(), mora = new Image(), puerta = new Image();
 const musica = document.getElementById('musicaAmbiental');
 const sonidoMeta = document.getElementById('sonidoFinal');
 const sonidoTeletransportacion = document.getElementById('teletransportacion');
+const sonidoFrutas = document.getElementById('sonidoFrutas');
 let tiempoTotalSegundos = 0, puntuacion = 0;
 
 mora.src = 'iconos/mora.png';
 tucan.src = 'iconos/feliz.png'
 fresa.src = 'iconos/fresa.png'
+puerta.src = 'iconos/puerta.png'
 
 //clase para crear muros
 class Muro {
@@ -246,13 +248,11 @@ function verificarColisionMuro(){
 
 function verificarColisionFresa(){
     for(let i = 0; i < arregloFrutas.length; i++){
-        for (let i = 0; i < arregloFrutas.length; i++) {
-            if (arregloFrutas[i].estaTocandoFresa()) {
-                console.log('tocó la fruta');
-                arregloFrutas.splice(i, 1); // Elimina la fruta del arreglo
-                puntuacion++;
-                break;
-            }
+        if (arregloFrutas[i].estaTocandoFresa()) {
+            sonidoFrutas.play();
+            arregloFrutas.splice(i, 1); // Elimina la fruta del arreglo
+            puntuacion++;
+            break;
         }
     }
 }
@@ -260,8 +260,7 @@ function verificarColisionFresa(){
 function llegoMeta(){
     let t_x = 540, t_y = 500, t_w = 50, t_h = 50;
 
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(t_x, t_y, t_w, t_h);
+    ctx.drawImage(puerta, t_x, t_y, t_w, t_h)
 
     if(posicionX < t_x + t_w && posicionX + w > t_x && posicionY < t_y + t_h && posicionY + h > t_y){
         sonidoMeta.play();
@@ -272,16 +271,18 @@ function llegoMeta(){
 function puntaje(){
     ctx.fillStyle = '#000';
     ctx.font = '20px Arial';
-    ctx.fillText(`Puntos: ${puntuacion}`, 400, 585);
+    ctx.fillText(`${puntuacion} / 5`, 440, 590);
+    ctx.drawImage(fresa, 400, 565, 30, 30);
 }
 
-//este evento se está usando para reproducir la música cuando cargue la página
+//este evento se está usando para ejecutar funciones cuando se termine de cargar la página
 window.addEventListener('load', () => {
     musica.play();
     pintarMapa();
     dibujarTucan()
     llegoMeta();
     dibujarMora();
+    setInterval(actualizarCronometro, 1000); // Actualiza cada segundo
 });
 
 //este evento se está usando para reproducir la música de nuevo cuando termine
@@ -319,8 +320,3 @@ function actualizarCronometro() {
         puntaje();
     }
 }
-
-// Iniciar el cronómetro cuando se cargue la página
-window.addEventListener('load', () => {
-    setInterval(actualizarCronometro, 1000); // Actualiza cada segundo
-});
