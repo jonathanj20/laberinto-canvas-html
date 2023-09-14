@@ -176,27 +176,29 @@ crearFresa(5, 455, 30, 30);
 document.addEventListener("keydown",(e) => {
     switch(e.key){
         case 'ArrowUp':
-            if(!pausa){
+            if(!pausa && !gano){
                 posicionY -= 5;
             }
             break;
         case 'ArrowRight':
-            if(!pausa){
+            if(!pausa && !gano){
                 posicionX += 5;
             }
             break;
-        case 'ArrowDown':
-            if(!pausa){
+        case 'ArrowDown': 
+            if(!pausa && !gano){
                 posicionY += 5;
             }
             break;
         case 'ArrowLeft':
-            if(!pausa){
+            if(!pausa && !gano){
                 posicionX -= 5;
             }
             break;
         case ' ':
-            pausa = !pausa;
+            if(!gano){
+                pausa = !pausa;
+            }
             break;
     }
     
@@ -215,7 +217,10 @@ document.addEventListener("keydown",(e) => {
     dibujarTucan();
     llegoMeta();
     dibujarMora();
-    ejecutarPausa();
+
+    if(!gano){
+        ejecutarPausa();
+    }
 });
 
 //esta función dibuja el personaje
@@ -280,6 +285,13 @@ function llegoMeta(){
     if(posicionX < t_x + t_w && posicionX + w > t_x && posicionY < t_y + t_h && posicionY + h > t_y){
         sonidoMeta.play();
         gano = true;
+        
+        //mensaje de que el jugador ha ganado
+        ctx.fillStyle = '#005ddc';
+        ctx.fillRect(100, 230, 410, 60);
+        ctx.fillStyle = '#fff'
+        ctx.font = '20px Arial';
+        ctx.fillText('¡Felicidades! Has llego a la meta:))', 150, 270);
     }
 }
 
