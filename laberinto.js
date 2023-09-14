@@ -1,15 +1,17 @@
 const canvas = document.getElementById('miCanvas');
 const ctx = canvas.getContext('2d');
 let posicionX = 15, posicionY = 15, oldX=0, oldY=0, w = 30, h = 30, xMora=20, yMora=515;
-let toco = false, gano = false, tocoFresa = false;
+let toco = false, gano = false, tocoFresa = false, pausa = false;
 let arregloMuros = [], arregloFrutas =  [];
 let tucan = new Image(), fresa = new Image(), mora = new Image(), puerta = new Image();
 const musica = document.getElementById('musicaAmbiental');
 const sonidoMeta = document.getElementById('sonidoFinal');
 const sonidoTeletransportacion = document.getElementById('teletransportacion');
 const sonidoFrutas = document.getElementById('sonidoFrutas');
+const sonidoPausa = document.getElementById('sonidoPausa');
 let tiempoTotalSegundos = 0, puntuacion = 0;
 
+//asignando rutas de los iconos
 mora.src = 'iconos/mora.png';
 tucan.src = 'iconos/feliz.png'
 fresa.src = 'iconos/fresa.png'
@@ -112,16 +114,16 @@ crearMuro(530, 0, 10, 70);
 crearMuro(470, 183, 120, 10);
 crearMuro(535, 145, 10, 45);
 crearMuro(290, 215, 130, 10);
-crearMuro(320, 175, 10, 50); //verticales
+crearMuro(320, 175, 10, 50); 
 crearMuro(320, 175, 10, 50);
 crearMuro(290, 215, 10, 100);
 crearMuro(240, 265, 50, 10);
 crearMuro(110, 265, 85, 10);
 crearMuro(109, 215, 10, 59);
 crearMuro(320, 175, 10, 50);
-crearMuro(160, 210, 10, 105);//vertiacles
-crearMuro(230, 140, 10, 50);//verticales
-crearMuro(260, 235, 10, 35);//verticales
+crearMuro(160, 210, 10, 105);
+crearMuro(230, 140, 10, 50);
+crearMuro(260, 235, 10, 35);
 crearMuro(210, 190, 50, 10);
 crearMuro(470, 190, 10, 75);
 crearMuro(340, 255, 200, 10);
@@ -139,7 +141,7 @@ crearMuro(40, 440, 150, 10);
 crearMuro(180, 410, 10, 40);
 crearMuro(180, 410, 100, 10);
 crearMuro(270, 410, 10, 50);
-crearMuro(330, 405, 100, 10); //lado donde puede estar el camino alterno
+crearMuro(330, 405, 100, 10); 
 crearMuro(330, 405, 10, 105);
 crearMuro(140, 500, 200, 10);
 crearMuro(230, 475, 10, 25);
@@ -174,16 +176,27 @@ crearFresa(5, 455, 30, 30);
 document.addEventListener("keydown",(e) => {
     switch(e.key){
         case 'ArrowUp':
-            posicionY -= 5;
+            if(!pausa){
+                posicionY -= 5;
+            }
             break;
         case 'ArrowRight':
-            posicionX += 5;
+            if(!pausa){
+                posicionX += 5;
+            }
             break;
         case 'ArrowDown':
-            posicionY += 5;
+            if(!pausa){
+                posicionY += 5;
+            }
             break;
         case 'ArrowLeft':
-            posicionX -= 5;
+            if(!pausa){
+                posicionX -= 5;
+            }
+            break;
+        case ' ':
+            pausa = !pausa;
             break;
     }
     
@@ -202,6 +215,7 @@ document.addEventListener("keydown",(e) => {
     dibujarTucan();
     llegoMeta();
     dibujarMora();
+    ejecutarPausa();
 });
 
 //esta función dibuja el personaje
@@ -257,6 +271,7 @@ function verificarColisionFresa(){
     }
 }
 
+//Esta función es para comprobar si el jugador llegó a la meta
 function llegoMeta(){
     let t_x = 540, t_y = 500, t_w = 50, t_h = 50;
 
@@ -273,6 +288,22 @@ function puntaje(){
     ctx.font = '20px Arial';
     ctx.fillText(`${puntuacion} / 5`, 440, 590);
     ctx.drawImage(fresa, 400, 565, 30, 30);
+}
+
+function ejecutarPausa(){
+    if(pausa){
+        musica.pause();
+        sonidoPausa.play();
+
+        ctx.fillStyle = 'rgba(194, 240, 60, .7)';
+        ctx.fillRect(0, 0, 600, 560);
+
+        ctx.font = '40px Arial';
+        ctx.fillStyle = '#0044b2';
+        ctx.fillText('P a u s a!', 220, 270);
+    } else {
+        musica.play();
+    }
 }
 
 //este evento se está usando para ejecutar funciones cuando se termine de cargar la página
@@ -303,13 +334,13 @@ function formatearTiempo(tiempo) {
 //0, 560 coordenadas del rectangulo, y 600 de ancho
 // Función para actualizar el cronómetro y dibujarlo en el canvas
 function actualizarCronometro() {
-    if(gano){
+    if(gano && !pausa){
         ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
         ctx.fillRect(0, 560, canvas.width, 40); // Fondo del cronómetro
         ctx.font = '20px Arial';
         ctx.fillStyle = 'red';
         ctx.fillText(`Tiempo: ${formatearTiempo(tiempoTotalSegundos)}`, 10, 585);
-    } else {
+    } else if(!pausa){
         tiempoTotalSegundos++;
         ctx.clearRect(0, 560, canvas.width, 40); // Limpiar el área del cronómetro
         ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
