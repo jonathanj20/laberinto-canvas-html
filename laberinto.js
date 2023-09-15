@@ -223,7 +223,6 @@ function actualizacion() {
     if(!gano){
         ejecutarPausa();
     }
-    //requestAnimationFrame(actualizacion);
 
     window.requestAnimationFrame = (function () {
         return window.requestAnimationFrame ||
