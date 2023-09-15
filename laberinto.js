@@ -203,9 +203,10 @@ document.addEventListener("keydown",(e) => {
     }
 });
 
+//está función actualiza todo el mapa continuamente con la función de requestAnimationFrame
 function actualizacion() {
     verificarColisionMuro();
-    verificarColisionFresa();
+    verificarColisionFresa();   
 
     if(!toco){
         oldX = posicionX;
@@ -213,16 +214,27 @@ function actualizacion() {
     } else {
         toco = false;
     }
-
+        
     pintarMapa();
     dibujarTucan();
     llegoMeta();
-    dibujarMora();
+    dibujarMora();  
 
     if(!gano){
         ejecutarPausa();
     }
-    requestAnimationFrame(actualizacion);
+    //requestAnimationFrame(actualizacion);
+
+    window.requestAnimationFrame = (function () {
+        return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            function (callback) {
+                window.setTimeout(callback, 17);
+            };
+    }());
+
+    window.requestAnimationFrame(actualizacion);
 }
 
 actualizacion();
