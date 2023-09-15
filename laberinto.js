@@ -201,11 +201,12 @@ document.addEventListener("keydown",(e) => {
             }
             break;
     }
-    
+});
+
+function actualizacion() {
     verificarColisionMuro();
     verificarColisionFresa();
-    
-    //si lo tocó, entonces se reinicia de nuevo la variable tocó. 
+
     if(!toco){
         oldX = posicionX;
         oldY = posicionY;
@@ -221,7 +222,10 @@ document.addEventListener("keydown",(e) => {
     if(!gano){
         ejecutarPausa();
     }
-});
+    requestAnimationFrame(actualizacion);
+}
+
+actualizacion();
 
 //esta función dibuja el personaje
 function dibujarTucan(){
