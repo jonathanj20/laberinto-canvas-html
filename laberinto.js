@@ -9,7 +9,7 @@ const sonidoMeta = document.getElementById('sonidoFinal');
 const sonidoTeletransportacion = document.getElementById('teletransportacion');
 const sonidoFrutas = document.getElementById('sonidoFrutas');
 const sonidoPausa = document.getElementById('sonidoPausa');
-let tiempoTotalSegundos = 0, puntuacion = 0;
+let tiempoTotalSegundos = 0, puntuacion = 0, sonoMeta = 0;
 
 //asignando rutas de los iconos
 mora.src = 'iconos/mora.png';
@@ -199,12 +199,16 @@ document.addEventListener("keydown",(e) => {
             if(!gano){
                 pausa = !pausa;
             }
+
+            if(pausa && !gano){
+                sonidoPausa.play();
+            }
             break;
     }
 });
 
 //está función actualiza todo el mapa continuamente con la función de requestAnimationFrame
-function actualizacion() {
+function actualizar() {
     verificarColisionMuro();
     verificarColisionFresa();   
 
@@ -233,10 +237,10 @@ function actualizacion() {
             };
     }());
 
-    window.requestAnimationFrame(actualizacion);
+    window.requestAnimationFrame(actualizar);
 }
 
-actualizacion();
+actualizar();
 
 //esta función dibuja el personaje
 function dibujarTucan(){
@@ -298,9 +302,12 @@ function llegoMeta(){
     ctx.drawImage(puerta, t_x, t_y, t_w, t_h)
 
     if(posicionX < t_x + t_w && posicionX + w > t_x && posicionY < t_y + t_h && posicionY + h > t_y){
-        sonidoMeta.play();
+        if(sonoMeta === 0){
+            sonidoMeta.play();
+        }
         gano = true;
-        
+        sonoMeta = 1;
+
         //mensaje de que el jugador ha ganado
         ctx.fillStyle = '#005ddc';
         ctx.fillRect(100, 230, 410, 60);
@@ -320,7 +327,6 @@ function puntaje(){
 function ejecutarPausa(){
     if(pausa){
         musica.pause();
-        sonidoPausa.play();
 
         ctx.fillStyle = 'rgba(194, 240, 60, .7)';
         ctx.fillRect(0, 0, 600, 560);
