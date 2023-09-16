@@ -1,6 +1,6 @@
 const canvas = document.getElementById('miCanvas');
 const ctx = canvas.getContext('2d');
-let posicionX = 15, posicionY = 15, oldX=0, oldY=0, w = 30, h = 30, xMora=20, yMora=515;
+let posicionX = 15, posicionY = 15, oldX=0, oldY=0, w = 27, h = 27, xMora=20, yMora=515;
 let toco = false, gano = false, tocoFresa = false, pausa = false;
 let arregloMuros = [], arregloFrutas =  [];
 let tucan = new Image(), fresa = new Image(), mora = new Image(), puerta = new Image();
@@ -9,7 +9,7 @@ const sonidoMeta = document.getElementById('sonidoFinal');
 const sonidoTeletransportacion = document.getElementById('teletransportacion');
 const sonidoFrutas = document.getElementById('sonidoFrutas');
 const sonidoPausa = document.getElementById('sonidoPausa');
-let tiempoTotalSegundos = 0, puntuacion = 0, sonoMeta = 0;
+let tiempoTotalSegundos = 0, puntuacion = 0, sonoMeta = 0, direccion = '';
 
 //asignando rutas de los iconos
 mora.src = 'iconos/mora.png';
@@ -83,7 +83,7 @@ crearMuro(0, 0, 10, 550); //borde izquierdo
 crearMuro(0, 550, 600, 10);//borde inferior
 crearMuro(590, 0, 10, 550);//borde derecho
 crearMuro(50, 0, 10, 50);
-crearMuro(0, 90, 70, 10);
+crearMuro(0, 90, 60, 10);
 crearMuro(50, 50, 50, 10);
 crearMuro(100, 50, 10,90);
 crearMuro(60, 135, 50,10);
@@ -177,22 +177,22 @@ document.addEventListener("keydown",(e) => {
     switch(e.key){
         case 'ArrowUp':
             if(!pausa && !gano){
-                posicionY -= 5;
+                direccion = 'ArrowUp';
             }
             break;
         case 'ArrowRight':
             if(!pausa && !gano){
-                posicionX += 5;
+                direccion = 'ArrowRight';
             }
             break;
         case 'ArrowDown': 
             if(!pausa && !gano){
-                posicionY += 5;
+                direccion = 'ArrowDown';
             }
             break;
         case 'ArrowLeft':
             if(!pausa && !gano){
-                posicionX -= 5;
+                direccion = 'ArrowLeft';
             }
             break;
         case ' ':
@@ -209,6 +209,29 @@ document.addEventListener("keydown",(e) => {
 
 //está función actualiza todo el mapa continuamente con la función de requestAnimationFrame
 function actualizar() {
+    switch(direccion){
+        case 'ArrowUp':
+            if(!pausa && !gano){
+                posicionY -= 2;
+            }
+            break;
+        case 'ArrowRight':
+            if(!pausa && !gano){
+                posicionX += 2;
+            }
+            break;
+        case 'ArrowDown': 
+            if(!pausa && !gano){
+                posicionY += 2;
+            }
+            break;
+        case 'ArrowLeft':
+            if(!pausa && !gano){
+                posicionX -= 2;
+            }
+            break;
+    }
+
     verificarColisionMuro();
     verificarColisionFresa();   
 
